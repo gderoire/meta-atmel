@@ -138,7 +138,7 @@ EOF
 
 F="family_$BOARD"
 M="mach_$BOARD"
-D="dtb_$BOARD"
+DTB="dtb_$BOARD"
 
 if [[ $# < 3 || -z ${!F} ]]; then
 	usage
@@ -148,18 +148,18 @@ fi
 case $LCD in
 	pda4)
 		video_mode="video=Unknown-1:480x272-16"
-		D="${D}_${LCD}"
+		DTB="${DTB}_${LCD}"
 		;;
 	pda7)
 		video_mode="video=Unknown-1:800x480-16"
-		D="${D}_${LCD}"
+		DTB="${DTB}_${LCD}"
 		;;
 	*)
 		video_mode="video=Unknown-1:800x480-16"
 		;;
 esac
 
-if [[ -z ${!D} ]]; then
+if [[ -z ${!DTB} ]]; then
 	echo "unknown board and LCD combination"
 	exit 1
 fi
@@ -181,6 +181,6 @@ if [[ ! -f $SAMBA ]]; then
 	exit 1
 fi
 
-echo "Executing: O=${DEPLOY_DIR_IMAGE}/ $SAMBA $TTY ${!M} $(dirname $0)/nandflash.tcl -- ${!F} zImage-${!D} $rootfs $video_mode"
+echo "Executing: O=${DEPLOY_DIR_IMAGE}/ $SAMBA $TTY ${!M} $(dirname $0)/nandflash.tcl -- ${!F} zImage-${!DTB} $rootfs $video_mode"
 export O=${DEPLOY_DIR_IMAGE}/
-$SAMBA $TTY ${!M} $(dirname $0)/nandflash.tcl -- ${!F} zImage-${!D} ${IMAGE_LINK_NAME}.ubi $video_mode
+$SAMBA $TTY ${!M} $(dirname $0)/nandflash.tcl -- ${!F} zImage-${!DTB} ${IMAGE_LINK_NAME}.ubi $video_mode
