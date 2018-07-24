@@ -131,6 +131,10 @@ Available boards:
   sama5d4ek
   sama5d4_xplained
 
+Available lcd:
+  pda4 : 480x272-16
+  pda7 : 800x480-16
+
 Example:
   $0 atmel-qt5-demo-image /dev/ttyACM0 at91sam9g45m10ek
 EOF
