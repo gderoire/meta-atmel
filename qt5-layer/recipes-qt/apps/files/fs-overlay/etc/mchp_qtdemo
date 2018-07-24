@@ -2,7 +2,7 @@
 
 start()
 {
-  res=$(cat /sys/class/drm/card0/*/modes | tr -d '\n')
+  res=$(cat /sys/class/graphics/fb0/modes | tr -d '\n')
   echo $res
 
   if [ -x /usr/bin/ts_calibrate ]; then
