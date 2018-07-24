@@ -169,17 +169,24 @@ if [[ -z $(which bitbake) ]]; then
 	exit 1
 fi
 
-eval $(MACHINE=${!F/_/-} bitbake -e $IMAGE | grep -E "(^DEPLOY_DIR_IMAGE|^IMAGE_LINK_NAME|^STAGING_BINDIR_NATIVE)")
+eval $(MACHINE=${!F/_/-} bitbake -e sam-ba-native | grep -E "(^STAGING_BINDIR_NATIVE|^D=)")
 
-SAMBA=$(which sam-ba)
-if [[ -z $SAMBA ]]; then
-	SAMBA=${STAGING_BINDIR_NATIVE}/sam-ba_cdc_linux/sam-ba
+MACHINE_ARCH=$(uname -m)
+if [ ${MACHINE_ARCH} == 'x86_64' ]; then
+	SAMBA_BIN=sam-ba_64
+	[ -z "$SAMBA" ] && SAMBA=$(which ${SAMBA_BIN})
+	[ -z "$SAMBA" ] && SAMBA=$(ls ${D}${STAGING_BINDIR_NATIVE}/sam-ba_cdc_linux/${SAMBA_BIN})
 fi
+SAMBA_BIN=sam-ba
+[ -z "$SAMBA" ] && SAMBA=$(which ${SAMBA_BIN})
+[ -z "$SAMBA" ] && SAMBA=$(ls ${D}${STAGING_BINDIR_NATIVE}/sam-ba_cdc_linux/${SAMBA_BIN})
 
 if [[ ! -f $SAMBA ]]; then
 	echo "Couldn't find sam-ba. Add it to your path or bitbake sam-ba-native"
 	exit 1
 fi
+
+eval $(MACHINE=${!F/_/-} bitbake -e $IMAGE | grep -E "(^DEPLOY_DIR_IMAGE|^IMAGE_LINK_NAME)")
 
 echo "Executing: O=${DEPLOY_DIR_IMAGE}/ $SAMBA $TTY ${!M} $(dirname $0)/nandflash.tcl -- ${!F} zImage-${!DTB} $rootfs $video_mode"
 export O=${DEPLOY_DIR_IMAGE}/
